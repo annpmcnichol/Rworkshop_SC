@@ -33,7 +33,6 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 ```# install and load tidyverse
 install.packages(‘tidyverse’)
-library(tidyverse)
 
 #National Parks in California
 ca <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/ca.csv") 
@@ -49,3 +48,35 @@ visit_16 <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science
 
 #All Nationally designated sites in Massachusetts
 mass <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/mass.csv")
+
+Start with the California (`ca') dataset
+
+```{r}
+head(ca)
+```
+
+Plot visitiation to all CA National Parks over time
+
+```{r}
+ggplot(data = ca) +
+  geom_point(aes(x = year, y = visitors, color = park_name)) +
+  theme()
+```
+
+```{r}
+ggplot(data = ca) +
+  geom_point(aes(x = year, y = visitors, color = park_name)) +
+  labs(x = "year", y = "Visitation", title = "California National Part Visitiation") +   theme_bw() +
+  theme(legend.title = element_blank())
+```
+```{r}
+head(se)
+```
+```{r}
+ggplot(data = se) +
+  geom_point(aes(x = year, y = visitors, color = state)) +
+  labs(x = "year", y = "visitors", title = "Southeast National Part Visitiation")  +
+  theme(legend.title = element_blank(),
+        axis.text.x = element_text(angle = 45, size = 14))
+```
+
