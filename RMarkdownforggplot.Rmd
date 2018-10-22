@@ -5,6 +5,8 @@ date: "October 22, 2018"
 output: html_document
 ---
 
+Learning how to plot using R, github, etc.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
