@@ -172,3 +172,126 @@ rj <- right_join(gap_2007, co2, by = "country")
 lj2 <- left_join(co2, gap_2007, by = "country")
 
 ```
+
+```{r}
+## read in gapminder data in wide format
+gap_wide <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')
+
+```
+
+## tidyr::gather()
+
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year,
+         value = obs_values,
+         -continent, -country)
+```
+##tidyr::separate()
+
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year,
+         value = obs_values,
+         -continent, -country) %>% 
+  separate(col = obstype_year, 
+           into = c("obs_type","year"),
+           sep = "_")
+
+```
+
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year,
+         value = obs_values,
+         -continent, -country) %>% 
+  separate(col = obstype_year, 
+           into = c("obs_type","year"),
+           sep = "_",
+           convert = TRUE)
+
+```
+## plot long data
+```{r}
+canada_df <- gap_long %>% 
+  filter(country == "Canada",
+         obs_type == "lifeExp")
+
+ggplot(data = canada_df, aes(x = year, y = obs_values)) +
+  geom_line()
+```
+## Plot the life expectancy of all countries in the Americas
+```{r}
+life_df <- gap_long %>% 
+  filter(obs_type == "lifeExp",
+         continent == "Americas")
+
+ggplot(data = life_df, aes(x = year, y = obs_values, color = country)) +
+  geom_line()
+```
+## 7.5 exercise
+
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key   = obstype_year,
+         value = obs_values,
+         -continent, -country) %>%
+  separate(obstype_year,
+           into = c('obs_type','year'),
+           sep = "_",
+           convert = TRUE)
+
+```
+
+## try again
+
+```{r}
+gap_long %>% 
+  group_by(continent, obs_type) %>%
+    summarize(means = mean(obs_values))
+
+cont <- gap_long %>% 
+  filter(obs_type == "lifeExp", 
+         year > 1980) %>% 
+  group_by(continent, year) %>% 
+  summarize(mean_le = mean(obs_values))
+
+ggplot(data = cont, aes(x = year, y = mean_le, color = continent)) + 
+  geom_line() +
+  labs(title = "Mean life expectancy",
+       x = "Year",
+       y = "Age (years)") 
+```
+
+## spread
+
+```{r}
+gap_normal <- gap_long %>% 
+  spread(key = obs_type,
+         value = obs_values)
+```
+
+## make bad file
+
+```{r}
+gap_wide2 <- gap_long %>% 
+  unite(col = var_names, obs_type, year, sep = "_") %>% 
+  spread(key = var_names, value = obs_values)
+str(gap_wide2)
+
+```
+
+## real answer
+```{r}
+
+```
+
+```{r}
+gap_wide_new <- gap_long %>% 
+  # first unite obs_type and year into a new column called var_names. Separate by _
+  unite(col = var_names, obs_type, year, sep = "_") %>% 
+  # then spread var_names out by key-value pair.
+  spread(key = var_names, value = obs_values)
+str(gap_wide_new)
+```
+
